@@ -4,17 +4,32 @@ from utils import clear_installed_videos
 
 
 class Header(Gtk.Box):
-    def clear_videos(self, _=None):
-        clear_installed_videos()
-        dialog = Gtk.MessageDialog(
-            flags=0,
-            message_type=Gtk.MessageType.INFO,
-            buttons=Gtk.ButtonsType.OK,
-            text="Success ! All videos have been removed.",
-        )
-        dialog.run()
-        dialog.destroy()
-        self.on_clear()
+  def clear_videos(self, _=None):
+    confirmation = Gtk.MessageDialog(
+        flags=0,
+        message_type=Gtk.MessageType.QUESTION,
+        buttons=Gtk.ButtonsType.OK_CANCEL,
+        text="Are you sure you want to clear all installed videos?"
+    )
+    response = confirmation.run()
+
+    if response == Gtk.ResponseType.OK:
+      clear_installed_videos()
+      dialog = Gtk.MessageDialog(
+          flags=0,
+          message_type=Gtk.MessageType.INFO,
+          buttons=Gtk.ButtonsType.OK,
+          text="Success ! All videos have been removed.",
+      )
+      dialog.run()
+      dialog.destroy()
+      self.on_clear()
+    else:
+      # User canceled the clear operation
+      pass
+
+    confirmation.destroy()
+
 
     def __init__(self, on_search: Callable, on_duration_filter: Callable, on_clear: Callable):
         super(Header, self).__init__()
